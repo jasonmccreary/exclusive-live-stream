@@ -13,31 +13,12 @@ class CreateReportController extends Controller
      * Handle the incoming request.
      *
      * @param \App\Http\Requests\Report\CreateReportRequest $request
-     * @param \App\Reporter\ReportBuilder $reporter
+     * @param \App\Reporter\ReportBuilder $reportBuilder
      * @return array|\Illuminate\Http\JsonResponse
      */
-    public function __invoke(CreateReportRequest $request, ReportBuilder $reporter)
+    public function __invoke(CreateReportRequest $request, ReportBuilder $reportBuilder)
     {
-        if ($request->has('user')) {
-            $reporter->forUser($request->get('user'));
-        }
-
-        if ($request->has('client')) {
-            $reporter->forClient($request->get('client'));
-        }
-
-        if ($request->has('project')) {
-            $reporter->forProject($request->get('project'));
-        }
-
-        if ($request->has('start_date') || $request->has('end_date')) {
-            $reporter->forDateRange(
-                Carbon::parse($request->get('start_date')),
-                Carbon::parse($request->get('end_date'))
-            );
-        }
-
-        $report = $reporter->generate();
+        $report = $reportBuilder->reportFromRequest($request);
 
         return response()->json([
             'hours' => $report->hours(),

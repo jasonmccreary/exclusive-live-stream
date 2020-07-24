@@ -8,19 +8,16 @@ class ScheduleController extends Controller
 {
     public function store(ScheduleStore $request)
     {
-        $attributes = $request->validated();
+        return response()->json([
+            'success' => Schedule::createFromRequest($request)
+        ]);
+    }
+}
 
-        $schedule = $request->validated();
-        unset($schedule['scheduleServiceTasks']);
 
-        $createdSchedule = Schedule::create($schedule);
-
-        foreach ($attributes['scheduleServiceTasks'] as $scheduleServiceTask) {
-            $createdSchedule->servicetasks()->create([
-                'task' => $scheduleServiceTask['task']
-            ]);
-        }
-
-        return response()->json(['success' => true]);
+class Schedule extends Model
+{
+    public static function createFromRequest(ScheduleStore $request) {
+        $request->validated();
     }
 }

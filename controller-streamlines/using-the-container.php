@@ -15,9 +15,9 @@ class LeaseController extends Controller
 {
     protected $client;
 
-    public function __construct()
+    public function __construct(MaderaApiWrapper $client)
     {
-        $this->client = new MaderaApiWrapper();
+        $this->client = $client;
 
         $this->middleware('guest');
     }
@@ -33,14 +33,18 @@ class LeaseController extends Controller
             ->where('id', $request->query('application'))
             ->first();
 
+        if (is_null($application)) {
+            return redirect('/dashboard');
+        }
+
         $guest = GuestRegistration::with('coapplicants', 'pets')
             ->where('magic_login_code', $request->query('guest'))
             ->first();
 
         // Get property information
-        $property = PropertyService::getProperty($guest->property_id);
+        $property = PropertyService::getProperty(null->property_id);
 
-        if (!$property || !$application || !$guest) {
+        if (!$property) {
             return redirect('/dashboard');
         }
 

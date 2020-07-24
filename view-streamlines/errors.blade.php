@@ -1,6 +1,6 @@
 <div class="form-horizontal">
 	<div class="row">
-		<div class="col-xs-6 col-sm-6 col-md-3 mb15 @if ( $errors->has('voorletters') ) state-error @endif">
+		<div class="col-xs-6 col-sm-6 col-md-3 mb15 @error('voorletters') state-error @enderror">
 			<label for="voorletters" class="field-label">Voorletters</label>
 			{!! Form::text('voorletters', null, ['class' => 'gui-input', 'id' => 'voorletters', 'autocomplete' => 'off']) !!}
 		</div>
